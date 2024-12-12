@@ -1,0 +1,10 @@
+{
+    "function_id": "default::todo_list::get_tasks",
+    "args": [
+        {
+            "type": "address",
+            "value": "0x2f8f81b96dd3bfdda7ea1f505791165febb7abc52ef6d1ebfc855a5da2617f4e"
+        }
+    ],
+    "type_args": []
+}

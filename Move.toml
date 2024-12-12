@@ -1,10 +1,12 @@
 [package]
 name = "aptos-example"
 version = "1.0.0"
+upgrade_policy = "compatible"
+
 authors = []
 
 [addresses]
-hello_blockchain = "_" 
+owner = "_" 
 
 [dev-addresses]
 

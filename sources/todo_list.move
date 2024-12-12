@@ -1,18 +1,25 @@
-module hello_blockchain::todo_list {
+module owner::todo_list {
     use std::signer;
     use std::vector;
     use std::string::String;
+    use aptos_framework::event;
 
     struct Task has store, copy, drop {
         id: u64,
         description: String,
         completed: bool,
-        created_at: u64
     }
 
     struct TodoList has key {
         todo_list: vector<Task>,
         next_task_id: u64
+    }
+
+    #[event]
+    struct AddTaskEvent has drop, store {
+        account: address,
+        task_id: u64,
+        description: String
     }
 
     const E_TODO_LIST_DONOT_EXIST: u64 = 1;
@@ -52,7 +59,7 @@ module hello_blockchain::todo_list {
         incomplete_tasks
     }
 
-    public entry fun create_tasks(account: &signer) {
+    public entry fun create_list(account: &signer) {
         let addr = signer::address_of(account);
         if (!exists<TodoList>(addr)) {
             move_to(
@@ -70,15 +77,21 @@ module hello_blockchain::todo_list {
             id: todo_list.next_task_id,
             description,
             completed: false,
-            created_at: aptos_framework::timestamp::now_seconds()
         };
-
+        let task_id = new_task.id;
         vector::push_back(&mut todo_list.todo_list, new_task);
         todo_list.next_task_id = todo_list.next_task_id + 1;
+        event::emit(
+                AddTaskEvent {
+                    account: addr,
+                    task_id,
+                    description 
+                }
+            );
 
     }
 
-    public entry fun complete_tasks(account: &signer, task_id: u64) acquires TodoList {
+    public entry fun complete_task(account: &signer, task_id: u64) acquires TodoList {
         let addr = signer::address_of(account);
         assert!(exists<TodoList>(addr), E_TODO_LIST_DONOT_EXIST);
         let todo_list: &mut TodoList = borrow_global_mut<TodoList>(addr);

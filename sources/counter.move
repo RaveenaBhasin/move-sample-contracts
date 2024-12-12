@@ -1,4 +1,4 @@
-module hello_blockchain::counter {
+module owner::counter {
     use std::signer;
     struct Counter has key, store {
         number: u64
